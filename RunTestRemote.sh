@@ -19,7 +19,7 @@ STOP_TSHARK="sh ControlTshark.sh stop"
 RUN_CLIENT="iperf -c"
 TARGET_ITF="10.10.10.253" #Target network interface
 REMOTE_SERVER="134.59.129.197"
-REMOTE_CLIENT="134.59.129.105"
+REMOTE_CLIENT="10.10.11.1"
 DIRECTORY="CapturedTraffic$( date +%Y%m%d%H%M )"
 STOREDPATH="/home/HaSonHai_Captures/Dump"
 TCP_DURATION="60"
@@ -81,19 +81,20 @@ do
     FILENAME="$STOREDPATH/$DIRECTORY/Traffic$INCR_PADDING.cap"
     CMD=ssh
     CMD_OPTIONS="root@$REMOTE_SERVER"
-    $CMD $CMD_OPTIONS "$RUN_CAPTURE $FILENAME"
+    $CMD $CMD_OPTIONS "$RUN_CAPTURE $FILENAME em2"
     sleep 5
     
     # Running the client
     CMD=ssh
     CMD_OPTIONS="root@$REMOTE_CLIENT"
-    $CMD $CMD_OPTIONS "$RUN_CAPTURE $FILENAME client"
-    if [ "$2" = threads ]; then
-        echo "Running Iperf Client as threads model on $REMOTE_CLIENT"
-        $CMD $CMD_OPTIONS "$RUN_CLIENT $TARGET_ITF -t $TCP_DURATION -P $INCR"
+    $CMD $CMD_OPTIONS "$RUN_CAPTURE $FILENAME eth0"
+    if [ "$2" = threads ]; then #Code in this "if" statement is wrong, don't use threads
+#        echo "Running Iperf Client as threads model on $REMOTE_CLIENT"
+#        $CMD $CMD_OPTIONS "$RUN_CLIENT $TARGET_ITF -t $TCP_DURATION -P $INCR"
+        echo Threads model is not good, please use procs model\!
     else
         echo "Running Iperf Client as processes model on $REMOTE_CLIENT"
-        $CMD $CMD_OPTIONS 'sh parallel.sh -j $INCR "$RUN_CLIENT $TARGET_ITF -t $TCP_DURATION"'
+        $CMD $CMD_OPTIONS "sh parallel.sh -j $INCR \"$RUN_CLIENT $TARGET_ITF -t $TCP_DURATION\""
     fi
     sleep 1
     $CMD $CMD_OPTIONS "$STOP_CAPTURE"
@@ -109,7 +110,7 @@ done
 
 #Stop Iperf Deamon
 CMD=ssh
-CMD_OPTIONS="$REMOTE_SERVER"
+CMD_OPTIONS="root@$REMOTE_SERVER"
 echo Send IPERF Server STOP Command...
 $CMD $CMD_OPTIONS "$STOP_IPERF_SERVER"
 sleep 2

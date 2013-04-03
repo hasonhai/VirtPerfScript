@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script to Start/Stop Tshark
-# Usage: ./ControlTshark.sh start|stop [filename] [client]
+# Usage: ./ControlTshark.sh start|stop [filename] [interface]
 # Created by: Ha Son Hai (hasonhai124(at)gmail.com)
 
 CONSOLE_OUTPUT="tshark$( date +%m%d ).console"
@@ -9,14 +9,14 @@ HOST_NAME=`hostname`
 #Default filename:
 if [ "$2" = "" ]; then
     FILENAME="traffic.cap"
+    ITF="em2"
 else
     FILENAME=$2
-fi
-
-if [ "$3" = client ]; then
-    ITF="em1"
-else
-    ITF="em2"
+    if [ "$3" = "" ];then
+        ITF="em2"
+    else
+        ITF=$3
+    fi
 fi
 
 if [ "$1" = start ]; then
