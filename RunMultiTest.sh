@@ -40,14 +40,14 @@ do
    sh RunTestRemote.sh 32 tshark
 done
 
-ADDING_DELAY="tc qdisc add dev em2 root netem delay 200ms && echo Delay is added"
-DEL_DELAY="tc qdisc del dev em2 root netem delay 200ms && echo Delay is removed"
+ADDING_DELAY="tc qdisc add dev em2 root netem delay 50ms && echo Delay is added"
+DEL_DELAY="tc qdisc del dev em2 root netem delay 50ms && echo Delay is removed"
 
 $CMD $SVR_OPTIONS "$ADDING_DELAY"
 
 $CMD $CLT_OPTIONS "$CHANGE_TCP_RENO"
 $CMD $SVR_OPTIONS "$CHANGE_TCP_RENO"
-for INCR in `seq 1 1`
+for INCR in `seq 1 5`
 do
     sh RunTestRemote.sh 32 tshark
     sleep 10
@@ -55,7 +55,7 @@ done
 
 $CMD $CLT_OPTIONS "$CHANGE_TCP_CUBIC"
 $CMD $SVR_OPTIONS "$CHANGE_TCP_CUBIC"
-for INCR in `seq 1 1`
+for INCR in `seq 1 5`
 do
     sh RunTestRemote.sh 32 tshark
     sleep 10
@@ -63,7 +63,7 @@ done
 
 $CMD $CLT_OPTIONS "$CHANGE_TCP_HIGHSPEED"
 $CMD $SVR_OPTIONS "$CHANGE_TCP_HIGHSPEED"
-for INCR in `seq 1 1`
+for INCR in `seq 1 5`
 do
     sh RunTestRemote.sh 32 tshark
     sleep 10
