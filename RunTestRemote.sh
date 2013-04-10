@@ -1,11 +1,10 @@
 #!/bin/bash
 # A script to run test automatically, need modify when using
 # Usage:
-#       ./RunTestRemote.sh <number of test> [threads [tshark]]
-#       ./RunTestRemote.sh <number of test> [tshark]
+#       ./RunTestRemote.sh <number of test> <tshark|tcpdump> [threads]
 #       [threads]: when there is threads, use -P option of Iperf
 #                  Otherwise, run multiple instances of Iperf
-#       [tshark]: Use Tshark to capture traffic, tcpdump by default
+#       <tshark|tcpdump>: Use Tshark or TCPdump to capture traffic, tcpdump by default
 #       <number of test>: Defaut is 1
 #                         Number of Threads/Processes
 #                         Number of time capture traffic
@@ -18,7 +17,7 @@ RUN_TSHARK="sh ControlTshark.sh start"
 STOP_TSHARK="sh ControlTshark.sh stop"
 RUN_CLIENT="iperf -c"
 TARGET_ITF="10.10.10.253" #Target network interface
-REMOTE_SERVER="134.59.129.197"
+REMOTE_SERVER="10.10.11.253"
 REMOTE_CLIENT="10.10.11.1"
 DIRECTORY="CapturedTraffic$( date +%Y%m%d%H%M )"
 STOREDPATH="/home/HaSonHai_Captures/Dump"
@@ -30,22 +29,18 @@ else
     MAX_TEST=$1;
 fi
 
-if [ "$2" = threads ]; then
-    if [ "$3" = tshark ]; then
-        RUN_CAPTURE="$RUN_TSHARK"
-        STOP_CAPTURE="$STOP_TSHARK"
-    else
-        RUN_CAPTURE="$RUN_TCPDUMP"
-        STOP_CAPTURE="$RUN_TCPDUM"
-    fi
+if [ "$2" = tshark ]; then
+    RUN_CAPTURE="$RUN_TSHARK"
+    STOP_CAPTURE="$STOP_TSHARK"
 else
-    if [ "$2" = tshark ]; then
-        RUN_CAPTURE="$RUN_TSHARK"
-        STOP_CAPTURE="$STOP_TSHARK"
-    else
-        RUN_CAPTURE="$RUN_TCPDUMP"
-        STOP_CAPTURE="$STOP_TCPDUMP"
-    fi
+    RUN_CAPTURE="$RUN_TCPDUMP"
+    STOP_CAPTURE="$STOP_TCPDUMP"
+fi
+
+if [ "$3" = threads ]; then
+    RUN_MODEL="threads"
+else
+    RUN_MODEL="processes"
 fi
 
 # Run server daemon on remote server
@@ -88,7 +83,7 @@ do
     CMD=ssh
     CMD_OPTIONS="root@$REMOTE_CLIENT"
     $CMD $CMD_OPTIONS "$RUN_CAPTURE $FILENAME eth0"
-    if [ "$2" = threads ]; then #Code in this "if" statement is wrong, don't use threads
+    if [ "$RUN_MODEL" = threads ]; then #Iperf command parsing wrongly, not know whether fixed or not
 #        echo "Running Iperf Client as threads model on $REMOTE_CLIENT"
 #        $CMD $CMD_OPTIONS "$RUN_CLIENT $TARGET_ITF -t $TCP_DURATION -P $INCR"
         echo Threads model is not good, please use procs model\!
