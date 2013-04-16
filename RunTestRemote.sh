@@ -2,6 +2,7 @@
 # A script to run test automatically, need modify when using
 # Usage:
 #       ./RunTestRemote.sh <number of test> <tshark|tcpdump> [threads]
+#       ./RunTestRemote.sh <number of test> <tshark|tcpdump> [size <size of test>]
 #       [threads]: when there is threads, use -P option of Iperf
 #                  Otherwise, run multiple instances of Iperf
 #       <tshark|tcpdump>: Use Tshark or TCPdump to capture traffic, tcpdump by default
@@ -22,6 +23,8 @@ REMOTE_CLIENT="10.10.11.1"
 DIRECTORY="CapturedTraffic$( date +%Y%m%d%H%M )"
 STOREDPATH="/home/HaSonHai_Captures/Dump"
 TCP_DURATION="60"
+TEST_TYPE="time"
+SIZE=10737418240 #10GBs
 
 if [ "$1" = "" ]; then
     MAX_TEST=1;
@@ -40,6 +43,10 @@ fi
 if [ "$3" = threads ]; then
     RUN_MODEL="threads"
 else
+    if [ "$3" = size ]; then
+        TEST_TYPE="size"
+        SIZE=$4
+    fi
     RUN_MODEL="processes"
 fi
 
@@ -80,6 +87,10 @@ do
     sleep 5
     
     # Running the client
+    if [ "$TEST_TYPE" = size ]; then
+        TEST_SIZE=`expr $SIZE / $INCR`
+    fi
+
     CMD=ssh
     CMD_OPTIONS="root@$REMOTE_CLIENT"
     $CMD $CMD_OPTIONS "$RUN_CAPTURE $FILENAME eth0"
@@ -89,7 +100,11 @@ do
         echo Threads model is not good, please use procs model\!
     else
         echo "Running Iperf Client as processes model on $REMOTE_CLIENT"
-        $CMD $CMD_OPTIONS "sh parallel.sh -j $INCR \"$RUN_CLIENT $TARGET_ITF -t $TCP_DURATION\""
+        if [ "$TEST_TYPE" = size ]; then
+            $CMD $CMD_OPTIONS "sh parallel.sh -j $INCR \"$RUN_CLIENT $TARGET_ITF -n $TEST_SIZE\""
+        else
+            $CMD $CMD_OPTIONS "sh parallel.sh -j $INCR \"$RUN_CLIENT $TARGET_ITF -t $TCP_DURATION\""
+        fi
     fi
     sleep 1
     $CMD $CMD_OPTIONS "$STOP_CAPTURE"

@@ -14,31 +14,68 @@ SVR_OPTIONS="root@10.10.11.253"
 CLT_OPTIONS="root@10.10.11.1"
 
 #Test RENO
-$CMD $CLT_OPTIONS "$CHANGE_TCP_RENO"
-$CMD $SVR_OPTIONS "$CHANGE_TCP_RENO"
-for INCR in `seq 1 6`
-do
-   sleep 10
-   sh RunTestRemote.sh 32 tcpdump
-done
+#$CMD $CLT_OPTIONS "$CHANGE_TCP_RENO"
+#$CMD $SVR_OPTIONS "$CHANGE_TCP_RENO"
+
+#for INCR in `seq 1 2`
+#do
+#   sleep 10
+#   sh RunTestRemote.sh 32 tcpdump size 104857600 #100MBs 
+#done
+
+#for INCR in `seq 1 2`
+#do
+#    sleep 10
+#    sh RunTestRemote.sh 32 tcpdump size 1073741824 #1GBs
+#done
+
+#for INCR in `seq 1 2`
+#do
+#    sleep 10
+#    sh RunTestRemote.sh 32 tcpdump size 10737418240 #10GBs
+#done
 
 #Test CUBIC
-$CMD $CLT_OPTIONS "$CHANGE_TCP_CUBIC"
-$CMD $SVR_OPTIONS "$CHANGE_TCP_CUBIC"
-for INCR in `seq 1 6`
-do
-   sleep 10
-   sh RunTestRemote.sh 32 tcpdump
-done
+#$CMD $CLT_OPTIONS "$CHANGE_TCP_CUBIC"
+#$CMD $SVR_OPTIONS "$CHANGE_TCP_CUBIC"
+#for INCR in `seq 1 2`
+#do
+#   sleep 10
+#   sh RunTestRemote.sh 32 tcpdump size 104857600
+#done
+
+#for INCR in `seq 1 2`
+#do
+#   sleep 10
+#   sh RunTestRemote.sh 32 tcpdump size 1073741824
+#done
+
+#for INCR in `seq 1 2`
+#do
+#   sleep 10
+#   sh RunTestRemote.sh 32 tcpdump size 10737418240
+#done
 
 #Test Highspeed
-$CMD $CLT_OPTIONS "$CHANGE_TCP_HIGHSPEED"
-$CMD $SVR_OPTIONS "$CHANGE_TCP_HIGHSPEED"
-for INCR in `seq 1 6`
-do
-   sleep 10
-   sh RunTestRemote.sh 32 tcpdump
-done
+#$CMD $CLT_OPTIONS "$CHANGE_TCP_HIGHSPEED"
+#$CMD $SVR_OPTIONS "$CHANGE_TCP_HIGHSPEED"
+#for INCR in `seq 1 2`
+#do
+#   sleep 10
+#   sh RunTestRemote.sh 32 tcpdump size 104857600
+#done
+
+#for INCR in `seq 1 2`
+#do
+#   sleep 10
+#   sh RunTestRemote.sh 32 tcpdump size 1073741824
+#done
+
+#for INCR in `seq 1 2`
+#do
+#   sleep 10
+#   sh RunTestRemote.sh 32 tcpdump size 10737418240
+#done
 
 ADDING_DELAY="tc qdisc add dev em2 root netem delay 50ms && echo Delay is added"
 DEL_DELAY="tc qdisc del dev em2 root netem delay 50ms && echo Delay is removed"
@@ -47,7 +84,7 @@ $CMD $SVR_OPTIONS "$ADDING_DELAY"
 
 $CMD $CLT_OPTIONS "$CHANGE_TCP_RENO"
 $CMD $SVR_OPTIONS "$CHANGE_TCP_RENO"
-for INCR in `seq 1 5`
+for INCR in `seq 1 7`
 do
     sh RunTestRemote.sh 32 tcpdump
     sleep 10
@@ -55,7 +92,7 @@ done
 
 $CMD $CLT_OPTIONS "$CHANGE_TCP_CUBIC"
 $CMD $SVR_OPTIONS "$CHANGE_TCP_CUBIC"
-for INCR in `seq 1 5`
+for INCR in `seq 1 7`
 do
     sh RunTestRemote.sh 32 tcpdump
     sleep 10
@@ -63,7 +100,7 @@ done
 
 $CMD $CLT_OPTIONS "$CHANGE_TCP_HIGHSPEED"
 $CMD $SVR_OPTIONS "$CHANGE_TCP_HIGHSPEED"
-for INCR in `seq 1 5`
+for INCR in `seq 1 7`
 do
     sh RunTestRemote.sh 32 tcpdump
     sleep 10
