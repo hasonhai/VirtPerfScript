@@ -19,7 +19,8 @@ STOP_TSHARK="sh ControlTshark.sh stop"
 RUN_CLIENT="iperf -c"
 TARGET_ITF="10.10.10.253" #Target network interface
 REMOTE_SERVER="10.10.11.253"
-REMOTE_CLIENT="10.10.11.1"
+REMOTE_CLIENT="10.10.11.101"
+CLIENT_PHY_NAME="eth3"
 DIRECTORY="CapturedTraffic$( date +%Y%m%d%H%M )"
 STOREDPATH="/home/HaSonHai_Captures/Dump"
 TCP_DURATION="60"
@@ -93,7 +94,7 @@ do
 
     CMD=ssh
     CMD_OPTIONS="root@$REMOTE_CLIENT"
-    $CMD $CMD_OPTIONS "$RUN_CAPTURE $FILENAME eth0"
+    $CMD $CMD_OPTIONS "$RUN_CAPTURE $FILENAME $CLIENT_PHY_NAME"
     if [ "$RUN_MODEL" = threads ]; then #Iperf command parsing wrongly, not know whether fixed or not
 #        echo "Running Iperf Client as threads model on $REMOTE_CLIENT"
 #        $CMD $CMD_OPTIONS "$RUN_CLIENT $TARGET_ITF -t $TCP_DURATION -P $INCR"
