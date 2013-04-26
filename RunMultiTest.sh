@@ -141,8 +141,10 @@ fi
 
 ###################################
 if [ "$TEST_DELAY" = true ]; then
-    ADDING_DELAY="tc qdisc add dev em2 root netem delay 50ms && echo Delay is added"
-    DEL_DELAY="tc qdisc del dev em2 root netem delay 50ms && echo Delay is removed"
+    ADDING_DELAY50MS="tc qdisc add dev em2 root netem delay 50ms && echo Delay is added"
+    DEL_DELAY50MS="tc qdisc del dev em2 root netem delay 50ms && echo Delay is removed"
+    ADDING_NOISE="tc qdisc add dev em2 root netem delay 0.5ms 0.2ms 25% && echo Noise is added"
+    DEL_NOISE="tc qdisc del dev em2 root netem delay 0.5ms 0.2ms 25% && echo Delay is removed"
     
     echo Adding Delay to $SVR_OPTIONS
     $CMD $SVR_OPTIONS "$ADDING_DELAY"
