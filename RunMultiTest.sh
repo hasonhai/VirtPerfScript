@@ -20,7 +20,7 @@ TEST_HIGHSPEED="true"
 TEST_DELAY="true"
 TEST_NODELAY="true"
 TEST_SIZE="false"   
-MAX_NUMBER=7
+MAX_NUMBER=3
 DUMP_PROG="tcpdump" # or "tshark"
 SIZE1=104857600     # 100MBs
 SIZE2=1073741824    # 1GBs
@@ -29,7 +29,7 @@ SIZE3=10737418240   # 10GBs
 #########################################
 if [ "$TEST_NODELAY" = true ]; then
     if [ "$TEST_RENO" = true ]; then
-        echo Test RENO: $MAX_NUMBER time
+        echo Test RENO: $MAX_NUMBER times
         $CMD $CLT_OPTIONS "$CHANGE_TCP_RENO"
         $CMD $SVR_OPTIONS "$CHANGE_TCP_RENO"
         for INCR in `seq 1 $MAX_NUMBER`
@@ -40,7 +40,7 @@ if [ "$TEST_NODELAY" = true ]; then
     fi
 
     if [ "$TEST_CUBIC" = true ]; then
-        echo Test CUBIC: $MAX_NUMBER time
+        echo Test CUBIC: $MAX_NUMBER times
         $CMD $CLT_OPTIONS "$CHANGE_TCP_CUBIC"
         $CMD $SVR_OPTIONS "$CHANGE_TCP_CUBIC"
         for INCR in `seq 1 $MAX_NUMBER`
@@ -51,7 +51,7 @@ if [ "$TEST_NODELAY" = true ]; then
     fi
 
     if [ "$TEST_HIGHSPEED" = true ]; then
-        echo Test HIGHSPEED: $MAX_NUMBER time
+        echo Test HIGHSPEED: $MAX_NUMBER times
         $CMD $CLT_OPTIONS "$CHANGE_TCP_HIGHSPEED"
         $CMD $SVR_OPTIONS "$CHANGE_TCP_HIGHSPEED"
         for INCR in `seq 1 $MAX_NUMBER`
@@ -68,19 +68,19 @@ if [ "$TEST_SIZE" = true ]; then
         echo Test RENO with constant size
         $CMD $CLT_OPTIONS "$CHANGE_TCP_RENO"
         $CMD $SVR_OPTIONS "$CHANGE_TCP_RENO"
-        echo Test size 100MBs: $MAX_NUMBER time
+        echo Test size 100MBs: $MAX_NUMBER times
         for INCR in `seq 1 $MAX_NUMBER`
         do
             sleep 10
             sh RunTestRemote.sh 32 $DUMP_PROG size $SIZE1 
         done
-        echo Test size 1GBs: $MAX_NUMBER time
+        echo Test size 1GBs: $MAX_NUMBER times
         for INCR in `seq 1 $MAX_NUMBER`
         do
             sleep 10
             sh RunTestRemote.sh 32 $DUMP_PROG size $SIZE2
         done
-        echo Test size 10GBs: $MAX_NUMBER time
+        echo Test size 10GBs: $MAX_NUMBER times
         for INCR in `seq 1 $MAX_NUMBER`
         do
             sleep 10
@@ -93,19 +93,19 @@ if [ "$TEST_SIZE" = true ]; then
         echo Test CUBIC with constant size
         $CMD $CLT_OPTIONS "$CHANGE_TCP_CUBIC"
         $CMD $SVR_OPTIONS "$CHANGE_TCP_CUBIC"
-        echo Test size 100MBs: $MAX_NUMBER time
+        echo Test size 100MBs: $MAX_NUMBER times
         for INCR in `seq 1 $MAX_NUMBER`
         do
             sleep 10
             sh RunTestRemote.sh 32 $DUMP_PROG size $SIZE1
         done
-        echo Test size 1GBs: $MAX_NUMBER time
+        echo Test size 1GBs: $MAX_NUMBER times
         for INCR in `seq 1 $MAX_NUMBER`
         do
             sleep 10
             sh RunTestRemote.sh 32 $DUMP_PROG size $SIZE2
         done
-        echo Test size 10GBs: $MAX_NUMBER time
+        echo Test size 10GBs: $MAX_NUMBER times
         for INCR in `seq 1 $MAX_NUMBER`
         do
             sleep 10
@@ -118,19 +118,19 @@ if [ "$TEST_SIZE" = true ]; then
         echo Test HIGHSPEED with constant size
         $CMD $CLT_OPTIONS "$CHANGE_TCP_HIGHSPEED"
         $CMD $SVR_OPTIONS "$CHANGE_TCP_HIGHSPEED"
-        echo Test size 100MBs: $MAX_NUMBER time
+        echo Test size 100MBs: $MAX_NUMBER times
         for INCR in `seq 1 $MAX_NUMBER`
         do
             sleep 10
             sh RunTestRemote.sh 32 $DUMP_PROG size $SIZE1
         done
-        echo Test size 1GBs: $MAX_NUMBER time
+        echo Test size 1GBs: $MAX_NUMBER times
         for INCR in `seq 1 $MAX_NUMBER`
         do
             sleep 10
             sh RunTestRemote.sh 32 $DUMP_PROG size $SIZE2
         done
-        echo Test size 10GBs: $MAX_NUMBER time
+        echo Test size 10GBs: $MAX_NUMBER times
         for INCR in `seq 1 $MAX_NUMBER`
         do
             sleep 10
@@ -149,33 +149,33 @@ if [ "$TEST_DELAY" = true ]; then
     echo Adding Delay to $SVR_OPTIONS
     $CMD $SVR_OPTIONS "$ADDING_DELAY"
     
-    echo Test RENO with DELAY: $MAX_NUMBER time
+    echo Test RENO with DELAY: $MAX_NUMBER times
     if [ "$TEST_RENO" = true ]; then
         $CMD $CLT_OPTIONS "$CHANGE_TCP_RENO"
         $CMD $SVR_OPTIONS "$CHANGE_TCP_RENO"
         for INCR in `seq 1 $MAX_NUMBER`
         do
-            sh RunTestRemote.sh 32 tcpdump
+            sh RunTestRemote.sh 32 $DUMP_PROG
             sleep 10
         done
         fi
-    echo Test CUBIC with DELAY: $MAX_NUMBER time
+    echo Test CUBIC with DELAY: $MAX_NUMBER times
     if [ "$TEST_CUBIC" = true ]; then
         $CMD $CLT_OPTIONS "$CHANGE_TCP_CUBIC"
         $CMD $SVR_OPTIONS "$CHANGE_TCP_CUBIC"
         for INCR in `seq 1 $MAX_NUMBER`
         do
-            sh RunTestRemote.sh 32 tcpdump
+            sh RunTestRemote.sh 32 $DUMP_PROG
             sleep 10
         done
     fi
-    echo Test HIGHSPEED with DELAY $MAX_NUMBER time
+    echo Test HIGHSPEED with DELAY: $MAX_NUMBER times
     if [ "$TEST_HIGHSPEED" = true ]; then
         $CMD $CLT_OPTIONS "$CHANGE_TCP_HIGHSPEED"
         $CMD $SVR_OPTIONS "$CHANGE_TCP_HIGHSPEED"
         for INCR in `seq 1 $MAX_NUMBER`
         do
-            sh RunTestRemote.sh 32 tcpdump
+            sh RunTestRemote.sh 32 $DUMP_PROG
             sleep 10
         done
     fi
