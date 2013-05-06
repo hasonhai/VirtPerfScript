@@ -20,7 +20,7 @@ TEST_HIGHSPEED="true"
 TEST_DELAY="true"
 TEST_NODELAY="true"
 TEST_SIZE="false"   
-MAX_NUMBER=3
+MAX_NUMBER=4
 DUMP_PROG="tcpdump" # or "tshark"
 SIZE1=104857600     # 100MBs
 SIZE2=1073741824    # 1GBs
@@ -141,13 +141,18 @@ fi
 
 ###################################
 if [ "$TEST_DELAY" = true ]; then
-    ADDING_DELAY50MS="tc qdisc add dev em2 root netem delay 50ms && echo Delay is added"
-    DEL_DELAY50MS="tc qdisc del dev em2 root netem delay 50ms && echo Delay is removed"
-    ADDING_NOISE="tc qdisc add dev em2 root netem delay 0.5ms 0.2ms 25% && echo Noise is added"
-    DEL_NOISE="tc qdisc del dev em2 root netem delay 0.5ms 0.2ms 25% && echo Delay is removed"
-    
+    ADDING_DELAY="tc qdisc add dev em2 root netem delay 50ms && echo Delay is added"
+    DEL_DELAY="tc qdisc del dev em2 root netem delay 50ms && echo Delay is removed"
+ 
+    TUNING_RMEM="echo \"4096 87380 9437184\" > /proc/sys/net/ipv4/tcp_rmem && echo Tuning rmem"
+    TUNING_WMEM="echo \"4096 16384 9437184\" > /proc/sys/net/ipv4/tcp_wmem && echo Tuning wmem"
+   
     echo Adding Delay to $SVR_OPTIONS
     $CMD $SVR_OPTIONS "$ADDING_DELAY"
+    $CMD $CLT_OPTIONS "$TUNING_RMEM"
+    $CMD $SVR_OPTIONS "$TUNING_RMEM"
+    $CMD $CLT_OPTIONS "$TUNING_WMEM"
+    $CMD $SVR_OPTIONS "$TUNING_WMEM"
     
     echo Test RENO with DELAY: $MAX_NUMBER times
     if [ "$TEST_RENO" = true ]; then
@@ -185,6 +190,11 @@ echo Reset configuration...
 if [ "$TEST_DELAY" = true ]; then
     echo Removing delay
     $CMD $SVR_OPTIONS "$DEL_DELAY"
+    TUNING_RMEM="echo \"4096 87380 716800\" > /proc/sys/net/ipv4/tcp_rmem && echo Return rmem"
+    TUNING_WMEM="echo \"4096 16384 716800\" > /proc/sys/net/ipv4/tcp_wmem && echo Return wmem"
+    $CMD $CLT_OPTIONS "$TUNING_RMEM"
+    $CMD $CLT_OPTIONS "$TUNING_WMEM"
+    # Only reset Client since Server is not affected by tunning
 fi
 echo "Returning default TCP verion (CUBIC)"
 $CMD $CLT_OPTIONS "$CHANGE_TCP_CUBIC"
